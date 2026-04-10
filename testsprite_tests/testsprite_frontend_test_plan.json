@@ -1,0 +1,1285 @@
+[
+  {
+    "id": "TC001",
+    "title": "Register a new account and land on dashboard",
+    "description": "Verifies a new user can register with valid details and is redirected to the dashboard on success.",
+    "category": "User Registration",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /register"
+      },
+      {
+        "type": "action",
+        "description": "Fill New User into the full name field"
+      },
+      {
+        "type": "action",
+        "description": "Fill a unique email address into the email field"
+      },
+      {
+        "type": "action",
+        "description": "Fill a password with at least 8 characters into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Submit the registration form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the user lands on the dashboard"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC002",
+    "title": "Register and land on dashboard with seeded categories",
+    "description": "Verifies a new visitor can register and reach the dashboard with job category options available when creating the first job.",
+    "category": "Create New Job",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /register"
+      },
+      {
+        "type": "action",
+        "description": "Fill a new email into the email field"
+      },
+      {
+        "type": "action",
+        "description": "Fill a valid password into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Submit the registration form"
+      },
+      {
+        "type": "action",
+        "description": "Click the control to add a new job entry from the dashboard"
+      },
+      {
+        "type": "action",
+        "description": "Click the category dropdown"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the category dropdown shows selectable default categories"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC003",
+    "title": "Login and land on dashboard",
+    "description": "Verifies a returning user can log in with valid credentials and reach the dashboard.",
+    "category": "User Login",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill {{LOGIN_USER}} into the email field"
+      },
+      {
+        "type": "action",
+        "description": "Fill {{LOGIN_PASSWORD}} into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the user lands on the dashboard"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC004",
+    "title": "Create first job and see it reflected on dashboard and work log",
+    "description": "Verifies a freelancer can create a first job and the dashboard monthly totals and recent jobs, plus the work log list, reflect the new entry.",
+    "category": "Create New Job",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Click the control to add a new job entry from the dashboard"
+      },
+      {
+        "type": "action",
+        "description": "Fill Freelance Client A into the client name field"
+      },
+      {
+        "type": "action",
+        "description": "Fill Project Alpha into the project name field"
+      },
+      {
+        "type": "action",
+        "description": "Select a valid start date into the start date field"
+      },
+      {
+        "type": "action",
+        "description": "Select a valid deadline date after the start date into the deadline date field"
+      },
+      {
+        "type": "action",
+        "description": "Select a category from the category dropdown"
+      },
+      {
+        "type": "action",
+        "description": "Select a status value for the job"
+      },
+      {
+        "type": "action",
+        "description": "Enter 1000 into the contract amount field"
+      },
+      {
+        "type": "action",
+        "description": "Save the new job entry"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the dashboard shows the new job in the recent jobs list"
+      },
+      {
+        "type": "action",
+        "description": "Click the navigation item to open the work log"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the work log list includes the newly created job"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC005",
+    "title": "Filter jobs by month, category, and status",
+    "description": "Verifies the work log filters narrow the visible job rows to match the selected month, category, and status.",
+    "category": "Work Log Management",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Click the navigation item to open the work log"
+      },
+      {
+        "type": "action",
+        "description": "Click the control to create a new work log entry"
+      },
+      {
+        "type": "action",
+        "description": "Fill Filter Client into the client name field"
+      },
+      {
+        "type": "action",
+        "description": "Fill Filter Project into the project name field"
+      },
+      {
+        "type": "action",
+        "description": "Select a category from the category dropdown"
+      },
+      {
+        "type": "action",
+        "description": "Select a status value for the job"
+      },
+      {
+        "type": "action",
+        "description": "Select a valid start date into the start date field"
+      },
+      {
+        "type": "action",
+        "description": "Save the new job entry"
+      },
+      {
+        "type": "action",
+        "description": "Select the month that includes the created job in the month filter"
+      },
+      {
+        "type": "action",
+        "description": "Select the created job's category in the category filter"
+      },
+      {
+        "type": "action",
+        "description": "Select the created job's status in the status filter"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the work log list shows the created job under the selected filters"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC006",
+    "title": "Search clients by name",
+    "description": "Verifies a freelancer can search the client directory by name and see the client list filtered to matching results.",
+    "category": "Client Directory",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill {{LOGIN_USER}} into the email field"
+      },
+      {
+        "type": "action",
+        "description": "Fill {{LOGIN_PASSWORD}} into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Click the navigation link to open the client directory"
+      },
+      {
+        "type": "action",
+        "description": "Fill a unique client name string into the client search field"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the client list updates to show only clients matching the search term"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC007",
+    "title": "Inline update job status from the work log table",
+    "description": "Verifies a freelancer can change a job’s status inline in the work log and the updated status is shown on the row.",
+    "category": "Work Log Management",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Click the navigation item to open the work log"
+      },
+      {
+        "type": "action",
+        "description": "Click the control to create a new work log entry"
+      },
+      {
+        "type": "action",
+        "description": "Fill Status Client into the client name field"
+      },
+      {
+        "type": "action",
+        "description": "Fill Status Project into the project name field"
+      },
+      {
+        "type": "action",
+        "description": "Select a status value for the job"
+      },
+      {
+        "type": "action",
+        "description": "Save the new job entry"
+      },
+      {
+        "type": "action",
+        "description": "Change the job status using the status control in the job row"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the job row shows the newly selected status"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC008",
+    "title": "Edit a job via modal and see updates in the list",
+    "description": "Verifies editing a job from the work log modal persists changes and the work log row reflects the update.",
+    "category": "Work Log Management",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Click the navigation item to open the work log"
+      },
+      {
+        "type": "action",
+        "description": "Click the control to create a new work log entry"
+      },
+      {
+        "type": "action",
+        "description": "Fill Edit Client into the client name field"
+      },
+      {
+        "type": "action",
+        "description": "Fill Edit Project into the project name field"
+      },
+      {
+        "type": "action",
+        "description": "Enter 200 into the contract amount field"
+      },
+      {
+        "type": "action",
+        "description": "Save the new job entry"
+      },
+      {
+        "type": "action",
+        "description": "Open the edit modal for the created job row"
+      },
+      {
+        "type": "action",
+        "description": "Fill Edit Project Updated into the project name field"
+      },
+      {
+        "type": "action",
+        "description": "Save changes in the edit modal"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the work log list shows the job with the updated project name"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC009",
+    "title": "View aggregated revenue and job counts per client",
+    "description": "Verifies creating multiple jobs for the same client results in an aggregated client entry with correct job count and revenue summary displayed.",
+    "category": "Client Directory",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill {{LOGIN_USER}} into the email field"
+      },
+      {
+        "type": "action",
+        "description": "Fill {{LOGIN_PASSWORD}} into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Click the navigation link to open the new work log entry form"
+      },
+      {
+        "type": "action",
+        "description": "Fill Client Alpha into the client name field"
+      },
+      {
+        "type": "action",
+        "description": "Fill a valid job title into the job title field"
+      },
+      {
+        "type": "action",
+        "description": "Fill 1000 into the job amount field"
+      },
+      {
+        "type": "action",
+        "description": "Submit the new job form"
+      },
+      {
+        "type": "action",
+        "description": "Click the navigation link to open the new work log entry form"
+      },
+      {
+        "type": "action",
+        "description": "Fill Client Alpha into the client name field"
+      },
+      {
+        "type": "action",
+        "description": "Fill a valid job title into the job title field"
+      },
+      {
+        "type": "action",
+        "description": "Fill 500 into the job amount field"
+      },
+      {
+        "type": "action",
+        "description": "Submit the new job form"
+      },
+      {
+        "type": "action",
+        "description": "Click the navigation link to open the client directory"
+      },
+      {
+        "type": "action",
+        "description": "Fill Client Alpha into the client search field"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the client row shows a job count of 2"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the client row shows an aggregated revenue total matching the two created jobs"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC010",
+    "title": "Delete a job with confirmation and remove it from the list",
+    "description": "Verifies deleting a job from the work log with confirmation removes the row from the job list.",
+    "category": "Work Log Management",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Click the navigation item to open the work log"
+      },
+      {
+        "type": "action",
+        "description": "Click the control to create a new work log entry"
+      },
+      {
+        "type": "action",
+        "description": "Fill Delete Client into the client name field"
+      },
+      {
+        "type": "action",
+        "description": "Fill Delete Project into the project name field"
+      },
+      {
+        "type": "action",
+        "description": "Save the new job entry"
+      },
+      {
+        "type": "action",
+        "description": "Initiate delete for the created job row"
+      },
+      {
+        "type": "action",
+        "description": "Confirm the deletion"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the deleted job no longer appears in the work log list"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC011",
+    "title": "Export clients CSV from directory",
+    "description": "Verifies a user can export client data as CSV and the browser downloads a CSV file from the client directory.",
+    "category": "Client Directory",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill {{LOGIN_USER}} into the email field"
+      },
+      {
+        "type": "action",
+        "description": "Fill {{LOGIN_PASSWORD}} into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Click the navigation link to open the client directory"
+      },
+      {
+        "type": "action",
+        "description": "Click the export clients CSV action"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a CSV file download is initiated"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC012",
+    "title": "Export jobs as CSV from work log",
+    "description": "Verifies a freelancer can export job data from the work log and a CSV download is initiated.",
+    "category": "Work Log Management",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Click the navigation item to open the work log"
+      },
+      {
+        "type": "action",
+        "description": "Click the control to create a new work log entry"
+      },
+      {
+        "type": "action",
+        "description": "Fill Export Client into the client name field"
+      },
+      {
+        "type": "action",
+        "description": "Fill Export Project into the project name field"
+      },
+      {
+        "type": "action",
+        "description": "Enter 300 into the contract amount field"
+      },
+      {
+        "type": "action",
+        "description": "Save the new job entry"
+      },
+      {
+        "type": "action",
+        "description": "Trigger the CSV export from the work log"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a CSV file download is initiated"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC013",
+    "title": "Save updated profile and business settings",
+    "description": "Verifies a freelancer can update settings fields and save, and the updated information persists on the settings page.",
+    "category": "User Settings",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill {{LOGIN_USER}} into the email field"
+      },
+      {
+        "type": "action",
+        "description": "Fill {{LOGIN_PASSWORD}} into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Click the navigation link to open settings"
+      },
+      {
+        "type": "action",
+        "description": "Fill Test User Settings into the full name field"
+      },
+      {
+        "type": "action",
+        "description": "Fill Test Studio LLC into the company name field"
+      },
+      {
+        "type": "action",
+        "description": "Fill TAX-12345 into the tax ID field"
+      },
+      {
+        "type": "action",
+        "description": "Fill 123 Test Street into the business address field"
+      },
+      {
+        "type": "action",
+        "description": "Select USD as the default currency"
+      },
+      {
+        "type": "action",
+        "description": "Submit the settings save action"
+      },
+      {
+        "type": "action",
+        "description": "Wait for the save to complete"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a success confirmation is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the settings page displays the updated profile and business information"
+      }
+    ],
+    "priority": "Medium"
+  },
+  {
+    "id": "TC014",
+    "title": "Navigate from landing page to registration",
+    "description": "Verifies a visitor can start signup from the landing page and reach the registration page.",
+    "category": "Landing Page Navigation",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /"
+      },
+      {
+        "type": "action",
+        "description": "Click the primary call-to-action to get started"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the registration page is displayed"
+      }
+    ],
+    "priority": "Medium"
+  },
+  {
+    "id": "TC015",
+    "title": "Discard new job draft without creating a record",
+    "description": "Verifies that discarding a partially filled new job form returns to the work log and does not create a job entry.",
+    "category": "Create New Job",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Click the navigation item to open the work log"
+      },
+      {
+        "type": "action",
+        "description": "Click the control to create a new work log entry"
+      },
+      {
+        "type": "action",
+        "description": "Fill Throwaway Client into the client name field"
+      },
+      {
+        "type": "action",
+        "description": "Fill Temporary Project into the project name field"
+      },
+      {
+        "type": "action",
+        "description": "Discard the draft job entry"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the work log list does not include a job for Throwaway Client"
+      }
+    ],
+    "priority": "Medium"
+  },
+  {
+    "id": "TC016",
+    "title": "Toggle currency display affects client amounts",
+    "description": "Verifies switching the currency toggle updates displayed client revenue amounts consistently across the client directory view.",
+    "category": "Client Directory",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill {{LOGIN_USER}} into the email field"
+      },
+      {
+        "type": "action",
+        "description": "Fill {{LOGIN_PASSWORD}} into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Click the navigation link to open the new work log entry form"
+      },
+      {
+        "type": "action",
+        "description": "Fill Client Currency into the client name field"
+      },
+      {
+        "type": "action",
+        "description": "Fill a valid job title into the job title field"
+      },
+      {
+        "type": "action",
+        "description": "Fill 15745 into the job amount field"
+      },
+      {
+        "type": "action",
+        "description": "Submit the new job form"
+      },
+      {
+        "type": "action",
+        "description": "Click the navigation link to open the client directory"
+      },
+      {
+        "type": "action",
+        "description": "Fill Client Currency into the client search field"
+      },
+      {
+        "type": "action",
+        "description": "Select USD in the currency toggle"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the client revenue amount is displayed in USD"
+      },
+      {
+        "type": "action",
+        "description": "Select IDR in the currency toggle"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the client revenue amount is displayed in IDR"
+      }
+    ],
+    "priority": "Medium"
+  },
+  {
+    "id": "TC017",
+    "title": "Client name required when creating a job",
+    "description": "Verifies the new job form blocks saving when the required client name is missing and shows a validation error.",
+    "category": "Create New Job",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Navigate to /dashboard/work-log/new"
+      },
+      {
+        "type": "action",
+        "description": "Fill Project Without Client into the project name field"
+      },
+      {
+        "type": "action",
+        "description": "Enter 500 into the contract amount field"
+      },
+      {
+        "type": "action",
+        "description": "Save the new job entry"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a required-field validation error is visible for the client name"
+      }
+    ],
+    "priority": "Medium"
+  },
+  {
+    "id": "TC018",
+    "title": "Paginate through client list",
+    "description": "Verifies a user can navigate client directory pagination controls and see different client rows on subsequent pages.",
+    "category": "Client Directory",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill {{LOGIN_USER}} into the email field"
+      },
+      {
+        "type": "action",
+        "description": "Fill {{LOGIN_PASSWORD}} into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Click the navigation link to open the new work log entry form"
+      },
+      {
+        "type": "action",
+        "description": "Fill Client Page A into the client name field"
+      },
+      {
+        "type": "action",
+        "description": "Fill a valid job title into the job title field"
+      },
+      {
+        "type": "action",
+        "description": "Fill 10 into the job amount field"
+      },
+      {
+        "type": "action",
+        "description": "Submit the new job form"
+      },
+      {
+        "type": "action",
+        "description": "Click the navigation link to open the new work log entry form"
+      },
+      {
+        "type": "action",
+        "description": "Fill Client Page B into the client name field"
+      },
+      {
+        "type": "action",
+        "description": "Fill a valid job title into the job title field"
+      },
+      {
+        "type": "action",
+        "description": "Fill 20 into the job amount field"
+      },
+      {
+        "type": "action",
+        "description": "Submit the new job form"
+      },
+      {
+        "type": "action",
+        "description": "Click the navigation link to open the client directory"
+      },
+      {
+        "type": "action",
+        "description": "Click the pagination control to go to the next page"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a different set of client rows is displayed after pagination"
+      }
+    ],
+    "priority": "Medium"
+  },
+  {
+    "id": "TC019",
+    "title": "Paginate through work log results",
+    "description": "Verifies a freelancer can use pagination controls in the work log to navigate between pages of job rows.",
+    "category": "Work Log Management",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Click the navigation item to open the work log"
+      },
+      {
+        "type": "action",
+        "description": "Use pagination controls to navigate to the next page of results"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a different page of job rows is displayed"
+      }
+    ],
+    "priority": "Medium"
+  },
+  {
+    "id": "TC020",
+    "title": "Discard unsaved settings changes",
+    "description": "Verifies a freelancer can discard edits in settings and the original values remain unchanged.",
+    "category": "User Settings",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill {{LOGIN_USER}} into the email field"
+      },
+      {
+        "type": "action",
+        "description": "Fill {{LOGIN_PASSWORD}} into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Click the navigation link to open settings"
+      },
+      {
+        "type": "action",
+        "description": "Fill Temp Name Change into the full name field"
+      },
+      {
+        "type": "action",
+        "description": "Fill Temp Company Change into the company name field"
+      },
+      {
+        "type": "action",
+        "description": "Click the discard changes action"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the settings fields revert to their previously saved values"
+      }
+    ],
+    "priority": "Medium"
+  },
+  {
+    "id": "TC021",
+    "title": "Upgrade to Pro updates plan status",
+    "description": "Verifies a free-tier user can complete the simulated upgrade and see plan status updated to Pro in settings.",
+    "category": "User Settings",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill {{LOGIN_USER}} into the email field"
+      },
+      {
+        "type": "action",
+        "description": "Fill {{LOGIN_PASSWORD}} into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Click the navigation link to open settings"
+      },
+      {
+        "type": "action",
+        "description": "Click the upgrade to Pro action"
+      },
+      {
+        "type": "action",
+        "description": "Confirm the upgrade in the upgrade confirmation UI"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the plan status is shown as Pro"
+      }
+    ],
+    "priority": "Medium"
+  },
+  {
+    "id": "TC022",
+    "title": "Navigate from landing page to login",
+    "description": "Verifies a visitor can navigate from the landing page to the login page.",
+    "category": "Landing Page Navigation",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /"
+      },
+      {
+        "type": "action",
+        "description": "Click the link to log in"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the login page is displayed"
+      }
+    ],
+    "priority": "Medium"
+  },
+  {
+    "id": "TC023",
+    "title": "Default currency selection persists across reload",
+    "description": "Verifies changing the default currency in settings persists when revisiting settings within the same session.",
+    "category": "User Settings",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill {{LOGIN_USER}} into the email field"
+      },
+      {
+        "type": "action",
+        "description": "Fill {{LOGIN_PASSWORD}} into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Click the navigation link to open settings"
+      },
+      {
+        "type": "action",
+        "description": "Select IDR as the default currency"
+      },
+      {
+        "type": "action",
+        "description": "Submit the settings save action"
+      },
+      {
+        "type": "action",
+        "description": "Wait for the save to complete"
+      },
+      {
+        "type": "action",
+        "description": "Click the navigation link to open the dashboard"
+      },
+      {
+        "type": "action",
+        "description": "Click the navigation link to open settings"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the default currency selection remains set to IDR"
+      }
+    ],
+    "priority": "Medium"
+  },
+  {
+    "id": "TC024",
+    "title": "Registration rejects short password",
+    "description": "Verifies registration blocks passwords shorter than the minimum and shows a validation error.",
+    "category": "User Registration",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /register"
+      },
+      {
+        "type": "action",
+        "description": "Fill New User into the full name field"
+      },
+      {
+        "type": "action",
+        "description": "Fill a unique email address into the email field"
+      },
+      {
+        "type": "action",
+        "description": "Fill a password shorter than 8 characters into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Submit the registration form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a password validation error is visible"
+      }
+    ],
+    "priority": "Low"
+  },
+  {
+    "id": "TC025",
+    "title": "Client directory empty state when no jobs exist",
+    "description": "Verifies the client directory shows an empty state when the user has no jobs and therefore no derived clients.",
+    "category": "Client Directory",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill {{LOGIN_USER}} into the email field"
+      },
+      {
+        "type": "action",
+        "description": "Fill {{LOGIN_PASSWORD}} into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Click the navigation link to open the work log"
+      },
+      {
+        "type": "action",
+        "description": "Delete all jobs shown in the work log using the row delete action and confirmation"
+      },
+      {
+        "type": "action",
+        "description": "Click the navigation link to open the client directory"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify an empty state is displayed indicating there are no clients"
+      }
+    ],
+    "priority": "Low"
+  },
+  {
+    "id": "TC026",
+    "title": "View Pro pricing/features section from landing page",
+    "description": "Verifies a visitor can jump to the pricing section and see the pricing comparison content.",
+    "category": "Landing Page Navigation",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /"
+      },
+      {
+        "type": "action",
+        "description": "Click the control to see Pro features/pricing"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the pricing comparison section is displayed"
+      }
+    ],
+    "priority": "Low"
+  },
+  {
+    "id": "TC027",
+    "title": "Expand and collapse an FAQ item",
+    "description": "Verifies a visitor can expand an FAQ accordion item to view its answer content and collapse it again.",
+    "category": "Landing Page Navigation",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /"
+      },
+      {
+        "type": "action",
+        "description": "Scroll to the FAQ section"
+      },
+      {
+        "type": "action",
+        "description": "Click an FAQ accordion item to expand it"
+      },
+      {
+        "type": "action",
+        "description": "Click the same FAQ accordion item to collapse it"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the FAQ answer content is not displayed for that item"
+      }
+    ],
+    "priority": "Low"
+  }
+]

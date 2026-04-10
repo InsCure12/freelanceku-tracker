@@ -1,0 +1,18 @@
+{
+  "status": "commited",
+  "type": "frontend",
+  "scope": "codebase",
+  "localEndpoint": "http://localhost:3000",
+  "executionArgs": {
+    "projectName": "freelanceku",
+    "projectPath": "D:\\Adip Developer's\\Website Portfolio\\freelanceku\\freelanceku",
+    "testIds": [],
+    "additionalInstruction": "",
+    "serverMode": "production",
+    "envs": {
+      "API_KEY": "sk-user-cqo03b7-GGVZWxGzlZ8kRm6xos1Wca4Aeg_7MD4V6yXsSvYZzaP9VfZrvJU2ezfl8QMDziL8LUWc8bGxFw6Xn7DBop8xyhmeNHro--X96LcatHJu-d557CC9IjCDLzwNU68"
+    }
+  },
+  "serverPort": 49859,
+  "proxy": "http://d36a5fb5-8673-4c4f-b35d-32168a8ff552:H9FeBvpgGCpm5y9C5WiMxtUvOTY23pdU@tun.testsprite.com:8080"
+}

@@ -23,6 +23,8 @@ export default function NewJobForm({ plan, categories }: NewJobFormProps) {
     duration: "",
     deadline: "",
     status: "pending" as "pending" | "ongoing" | "done",
+    paymentStatus: "unpaid" as "paid" | "unpaid" | "dp",
+    dpAmount: "",
     description: "",
   });
 
@@ -38,6 +40,13 @@ export default function NewJobForm({ plan, categories }: NewJobFormProps) {
           amount: parseFloat(form.amount) || 0,
           duration: form.duration ? parseFloat(form.duration) : null,
           deadline: form.deadline || null,
+          paymentStatus: form.paymentStatus,
+          dpAmount:
+            form.paymentStatus === "dp" ? parseFloat(form.dpAmount) || 0 : 0,
+          dpDate:
+            form.paymentStatus === "dp"
+              ? new Date().toISOString().split("T")[0]
+              : null,
         }),
       });
       if (res.ok) {
@@ -55,7 +64,9 @@ export default function NewJobForm({ plan, categories }: NewJobFormProps) {
     <div className="space-y-6">
       {/* Breadcrumb */}
       <div className="text-xs text-outline">
-        <Link href="/dashboard/work-log" className="hover:text-primary">Work Log</Link>
+        <Link href="/dashboard/work-log" className="hover:text-primary">
+          Work Log
+        </Link>
         {" > "}
         <span className="text-on-surface font-semibold">New Job Entry</span>
       </div>
@@ -63,9 +74,12 @@ export default function NewJobForm({ plan, categories }: NewJobFormProps) {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl lg:text-3xl font-bold text-on-surface">Register New Engagement</h1>
+          <h1 className="text-2xl lg:text-3xl font-bold text-on-surface">
+            Register New Engagement
+          </h1>
           <p className="text-xs lg:text-sm text-on-surface-variant mt-2">
-            Document your professional services with architectural precision. Ensure all fiscal details are captured for accurate tax forecasting.
+            Document your professional services with architectural precision.
+            Ensure all fiscal details are captured for accurate tax forecasting.
           </p>
         </div>
         <div className="flex gap-3">
@@ -85,43 +99,58 @@ export default function NewJobForm({ plan, categories }: NewJobFormProps) {
         </div>
       </div>
 
-      <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <form
+        onSubmit={handleSubmit}
+        className="grid grid-cols-1 lg:grid-cols-12 gap-6"
+      >
         {/* Main Form */}
         <div className="lg:col-span-8 space-y-8">
           {/* Core Details */}
           <div className="bg-surface-container-lowest rounded-2xl p-5 lg:p-8">
             <div className="flex items-center gap-3 mb-6">
               <span className="text-lg">🏗️</span>
-              <h2 className="text-lg font-bold text-on-surface">Core Engagement Details</h2>
+              <h2 className="text-lg font-bold text-on-surface">
+                Core Engagement Details
+              </h2>
             </div>
 
             <div className="space-y-6">
               <div>
-                <label className="text-[10px] uppercase tracking-wider text-outline font-semibold">Client Identity</label>
+                <label className="text-[10px] uppercase tracking-wider text-outline font-semibold">
+                  Client Identity
+                </label>
                 <input
                   type="text"
                   placeholder="e.g. Acme Architectural Firm"
                   value={form.clientName}
-                  onChange={(e) => setForm({ ...form, clientName: e.target.value })}
+                  onChange={(e) =>
+                    setForm({ ...form, clientName: e.target.value })
+                  }
                   required
                   className="w-full mt-2 px-4 py-3 bg-surface-container-high/50 rounded-xl text-on-surface text-sm placeholder:text-outline/50 focus:outline-none focus:ring-2 focus:ring-primary/30"
                 />
               </div>
 
               <div>
-                <label className="text-[10px] uppercase tracking-wider text-outline font-semibold">Project Name</label>
+                <label className="text-[10px] uppercase tracking-wider text-outline font-semibold">
+                  Project Name
+                </label>
                 <input
                   type="text"
                   placeholder="e.g. Website Redesign Phase 1"
                   value={form.projectName}
-                  onChange={(e) => setForm({ ...form, projectName: e.target.value })}
+                  onChange={(e) =>
+                    setForm({ ...form, projectName: e.target.value })
+                  }
                   className="w-full mt-2 px-4 py-3 bg-surface-container-high/50 rounded-xl text-on-surface text-sm placeholder:text-outline/50 focus:outline-none focus:ring-2 focus:ring-primary/30"
                 />
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
                 <div>
-                  <label className="text-[10px] uppercase tracking-wider text-outline font-semibold">Project Commencement</label>
+                  <label className="text-[10px] uppercase tracking-wider text-outline font-semibold">
+                    Project Commencement
+                  </label>
                   <input
                     type="date"
                     value={form.date}
@@ -131,36 +160,50 @@ export default function NewJobForm({ plan, categories }: NewJobFormProps) {
                   />
                 </div>
                 <div>
-                  <label className="text-[10px] uppercase tracking-wider text-outline font-semibold">Deadline</label>
+                  <label className="text-[10px] uppercase tracking-wider text-outline font-semibold">
+                    Deadline
+                  </label>
                   <input
                     type="date"
                     value={form.deadline}
-                    onChange={(e) => setForm({ ...form, deadline: e.target.value })}
+                    onChange={(e) =>
+                      setForm({ ...form, deadline: e.target.value })
+                    }
                     className="w-full mt-2 px-4 py-3 bg-surface-container-high/50 rounded-xl text-on-surface text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
                   />
                 </div>
               </div>
 
               <div>
-                  <label className="text-[10px] uppercase tracking-wider text-outline font-semibold">Service Architecture</label>
-                  <select
-                    value={form.categoryId}
-                    onChange={(e) => setForm({ ...form, categoryId: e.target.value })}
-                    className="w-full mt-2 px-4 py-3 bg-surface-container-high/50 rounded-xl text-on-surface text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
-                  >
-                    <option value="">Select category...</option>
-                    {categories.map((c) => (
-                      <option key={c.id} value={c.id}>{c.name}</option>
-                    ))}
-                  </select>
+                <label className="text-[10px] uppercase tracking-wider text-outline font-semibold">
+                  Service Architecture
+                </label>
+                <select
+                  value={form.categoryId}
+                  onChange={(e) =>
+                    setForm({ ...form, categoryId: e.target.value })
+                  }
+                  className="w-full mt-2 px-4 py-3 bg-surface-container-high/50 rounded-xl text-on-surface text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
+                >
+                  <option value="">Select category...</option>
+                  {categories.map((c) => (
+                    <option key={c.id} value={c.id}>
+                      {c.name}
+                    </option>
+                  ))}
+                </select>
               </div>
 
               <div>
-                <label className="text-[10px] uppercase tracking-wider text-outline font-semibold">Scope of Work</label>
+                <label className="text-[10px] uppercase tracking-wider text-outline font-semibold">
+                  Scope of Work
+                </label>
                 <textarea
                   placeholder="Outline the architectural milestones and deliverables..."
                   value={form.description}
-                  onChange={(e) => setForm({ ...form, description: e.target.value })}
+                  onChange={(e) =>
+                    setForm({ ...form, description: e.target.value })
+                  }
                   rows={4}
                   className="w-full mt-2 px-4 py-3 bg-surface-container-high/50 rounded-xl text-on-surface text-sm placeholder:text-outline/50 focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none"
                 />
@@ -172,11 +215,17 @@ export default function NewJobForm({ plan, categories }: NewJobFormProps) {
           <div className="bg-surface-container-lowest rounded-2xl p-5 lg:p-8">
             <div className="flex items-center gap-3 mb-6">
               <span className="text-lg">🚩</span>
-              <h2 className="text-lg font-bold text-on-surface">Current Workflow Phase</h2>
+              <h2 className="text-lg font-bold text-on-surface">
+                Current Workflow Phase
+              </h2>
             </div>
             <div className="grid grid-cols-3 gap-3 lg:gap-4">
               {(["pending", "ongoing", "done"] as const).map((s) => {
-                const icons: Record<string, string> = { pending: "⏳", ongoing: "🔄", done: "✅" };
+                const icons: Record<string, string> = {
+                  pending: "⏳",
+                  ongoing: "🔄",
+                  done: "✅",
+                };
                 return (
                   <button
                     key={s}
@@ -195,17 +244,92 @@ export default function NewJobForm({ plan, categories }: NewJobFormProps) {
               })}
             </div>
           </div>
+
+          {/* Payment Status */}
+          <div className="bg-surface-container-lowest rounded-2xl p-5 lg:p-8">
+            <div className="flex items-center gap-3 mb-6">
+              <span className="text-lg">💰</span>
+              <h2 className="text-lg font-bold text-on-surface">
+                Payment Status
+              </h2>
+            </div>
+            <div className="grid grid-cols-3 gap-3 lg:gap-4">
+              {(["unpaid", "dp", "paid"] as const).map((ps) => {
+                const icons: Record<string, string> = {
+                  unpaid: "⏳",
+                  dp: "💳",
+                  paid: "✅",
+                };
+                const labels: Record<string, string> = {
+                  unpaid: "Unpaid",
+                  dp: "DP",
+                  paid: "Paid",
+                };
+                return (
+                  <button
+                    key={ps}
+                    type="button"
+                    onClick={() => setForm({ ...form, paymentStatus: ps })}
+                    className={`p-4 rounded-xl text-left transition-all ${
+                      form.paymentStatus === ps
+                        ? ps === "paid"
+                          ? "bg-[#ecfdf5] text-[#065f46] ring-2 ring-[#10b981]"
+                          : ps === "dp"
+                            ? "bg-[#fff7ed] text-[#9a3412] ring-2 ring-[#f59e0b]"
+                            : "bg-[#fef2f2] text-[#991b1b] ring-2 ring-[#ef4444]"
+                        : "bg-surface-container-high/50 text-on-surface hover:bg-surface-container-high"
+                    }`}
+                  >
+                    <span className="text-2xl">{icons[ps]}</span>
+                    <p className="mt-2 text-sm font-bold uppercase">
+                      {labels[ps]}
+                    </p>
+                  </button>
+                );
+              })}
+            </div>
+            {form.paymentStatus === "dp" && (
+              <div className="mt-4">
+                <label className="block text-xs font-semibold text-on-surface-variant uppercase tracking-wider mb-1.5">
+                  Jumlah DP
+                </label>
+                <input
+                  type="number"
+                  min={0}
+                  step="any"
+                  value={form.dpAmount}
+                  onChange={(e) =>
+                    setForm({ ...form, dpAmount: e.target.value })
+                  }
+                  placeholder="Masukkan jumlah DP"
+                  className="w-full px-4 py-3 rounded-xl bg-surface-container text-on-surface text-sm border border-outline-variant/20 focus:outline-none focus:ring-2 focus:ring-[#f59e0b]/30"
+                />
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Right Sidebar */}
         <div className="lg:col-span-4 space-y-6">
           {/* Financial Valuation */}
           <div className="bg-gradient-to-br from-primary to-primary-container rounded-2xl p-6 text-on-primary sticky top-24">
-            <p className="text-[10px] uppercase tracking-wider text-primary-fixed/60">Financial Valuation</p>
-            <p className="text-xs text-primary-fixed/60 mt-1 uppercase tracking-wider">Contract Value</p>
+            <p className="text-[10px] uppercase tracking-wider text-primary-fixed/60">
+              Financial Valuation
+            </p>
+            <p className="text-xs text-primary-fixed/60 mt-1 uppercase tracking-wider">
+              Contract Value
+            </p>
             <div className="flex items-baseline gap-2 mt-2">
-              <span className="text-sm text-primary-fixed/60">{form.currency === "USD" ? "$" : "Rp"}</span>
-              <span className="text-4xl font-bold">{contractValue > 0 ? new Intl.NumberFormat(form.currency === "USD" ? "en-US" : "id-ID").format(contractValue) : "0.00"}</span>
+              <span className="text-sm text-primary-fixed/60">
+                {form.currency === "USD" ? "$" : "Rp"}
+              </span>
+              <span className="text-4xl font-bold">
+                {contractValue > 0
+                  ? new Intl.NumberFormat(
+                      form.currency === "USD" ? "en-US" : "id-ID",
+                    ).format(contractValue)
+                  : "0.00"}
+              </span>
             </div>
 
             <input
@@ -218,15 +342,23 @@ export default function NewJobForm({ plan, categories }: NewJobFormProps) {
               className="w-full mt-4 px-4 py-3 bg-on-primary/10 rounded-xl text-on-primary text-sm placeholder:text-primary-fixed/40 focus:outline-none focus:ring-2 focus:ring-on-primary/30"
             />
 
-            <p className="text-[10px] uppercase tracking-wider text-primary-fixed/60 mt-4">Currency Locale</p>
+            <p className="text-[10px] uppercase tracking-wider text-primary-fixed/60 mt-4">
+              Currency Locale
+            </p>
             <div className="flex rounded-xl overflow-hidden mt-2 bg-on-primary/10">
               {(["USD", "IDR"] as const).map((c) => (
                 <button
                   key={c}
                   type="button"
-                  onClick={() => plan === "pro" || c === "IDR" ? setForm({ ...form, currency: c }) : null}
+                  onClick={() =>
+                    plan === "pro" || c === "IDR"
+                      ? setForm({ ...form, currency: c })
+                      : null
+                  }
                   className={`flex-1 py-2 text-xs font-semibold transition-colors ${
-                    form.currency === c ? "bg-on-primary text-primary" : "text-primary-fixed/60 hover:text-on-primary"
+                    form.currency === c
+                      ? "bg-on-primary text-primary"
+                      : "text-primary-fixed/60 hover:text-on-primary"
                   } ${c === "USD" && plan === "free" ? "opacity-50 cursor-not-allowed" : ""}`}
                 >
                   {c}
@@ -241,18 +373,24 @@ export default function NewJobForm({ plan, categories }: NewJobFormProps) {
               </button>
             </div>
             {plan === "free" && (
-              <p className="text-[10px] text-primary-fixed/40 mt-2">* Multi-currency active via Pro subscription</p>
+              <p className="text-[10px] text-primary-fixed/40 mt-2">
+                * Multi-currency active via Pro subscription
+              </p>
             )}
 
             {plan === "pro" && (
               <div className="mt-4">
-                <label className="text-[10px] uppercase tracking-wider text-primary-fixed/60">Duration (hours)</label>
+                <label className="text-[10px] uppercase tracking-wider text-primary-fixed/60">
+                  Duration (hours)
+                </label>
                 <input
                   type="number"
                   step="0.5"
                   placeholder="e.g. 4.5"
                   value={form.duration}
-                  onChange={(e) => setForm({ ...form, duration: e.target.value })}
+                  onChange={(e) =>
+                    setForm({ ...form, duration: e.target.value })
+                  }
                   className="w-full mt-2 px-4 py-3 bg-on-primary/10 rounded-xl text-on-primary text-sm placeholder:text-primary-fixed/40 focus:outline-none focus:ring-2 focus:ring-on-primary/30"
                 />
               </div>
@@ -263,10 +401,13 @@ export default function NewJobForm({ plan, categories }: NewJobFormProps) {
           <div className="bg-tertiary-fixed/30 rounded-2xl p-5">
             <div className="flex items-center gap-2 mb-2">
               <span className="text-tertiary text-lg">💡</span>
-              <p className="text-sm font-bold text-tertiary">Architect&apos;s Tip</p>
+              <p className="text-sm font-bold text-tertiary">
+                Architect&apos;s Tip
+              </p>
             </div>
             <p className="text-xs text-on-surface-variant">
-              Defining specific categories helps our AI engine predict your quarterly tax liability with 99.8% accuracy.
+              Defining specific categories helps our AI engine predict your
+              quarterly tax liability with 99.8% accuracy.
             </p>
           </div>
         </div>

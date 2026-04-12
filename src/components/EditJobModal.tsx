@@ -12,6 +12,9 @@ interface JobData {
   amount: number;
   currency: string;
   status: string;
+  paymentStatus: string;
+  dpAmount?: number | null;
+  dpDate?: string | null;
   deadline?: string | null;
   description?: string | null;
 }
@@ -30,6 +33,8 @@ export default function EditJobModal({ job, onClose }: Props) {
     amount: job.amount,
     currency: job.currency,
     status: job.status,
+    paymentStatus: job.paymentStatus || "unpaid",
+    dpAmount: job.dpAmount || 0,
   });
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -51,6 +56,12 @@ export default function EditJobModal({ job, onClose }: Props) {
           amount: form.amount,
           currency: form.currency,
           status: form.status,
+          paymentStatus: form.paymentStatus,
+          dpAmount: form.paymentStatus === "dp" ? form.dpAmount : 0,
+          dpDate:
+            form.paymentStatus === "dp"
+              ? new Date().toISOString().split("T")[0]
+              : null,
         }),
       });
       if (!res.ok) {
@@ -70,14 +81,20 @@ export default function EditJobModal({ job, onClose }: Props) {
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center">
       {/* Backdrop */}
-      <div className="absolute inset-0 bg-black/40 backdrop-blur-sm animate-fade-in" onClick={onClose} />
+      <div
+        className="absolute inset-0 bg-black/40 backdrop-blur-sm animate-fade-in"
+        onClick={onClose}
+      />
 
       {/* Modal */}
       <div className="relative bg-surface-container-lowest rounded-2xl shadow-2xl w-full max-w-lg mx-4 overflow-hidden animate-modal-in">
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-outline-variant/15">
           <h2 className="text-lg font-bold text-on-surface">Edit Job</h2>
-          <button onClick={onClose} className="p-1 rounded-lg text-outline hover:text-on-surface hover:bg-surface-container-high transition-colors">
+          <button
+            onClick={onClose}
+            className="p-1 rounded-lg text-outline hover:text-on-surface hover:bg-surface-container-high transition-colors"
+          >
             <XCircle size={18} strokeWidth={1.75} />
           </button>
         </div>
@@ -106,7 +123,9 @@ export default function EditJobModal({ job, onClose }: Props) {
             <input
               type="text"
               value={form.projectName}
-              onChange={(e) => setForm({ ...form, projectName: e.target.value })}
+              onChange={(e) =>
+                setForm({ ...form, projectName: e.target.value })
+              }
               className="w-full px-4 py-2.5 rounded-xl bg-surface-container text-on-surface text-sm border border-outline-variant/20 focus:outline-none focus:ring-2 focus:ring-primary/30"
               placeholder="Optional"
             />
@@ -153,6 +172,58 @@ export default function EditJobModal({ job, onClose }: Props) {
             </div>
           </div>
 
+          {/* Payment Status */}
+          <div>
+            <label className="block text-xs font-semibold text-on-surface-variant uppercase tracking-wider mb-1.5">
+              Payment Status
+            </label>
+            <div className="flex rounded-xl overflow-hidden border border-outline-variant/20">
+              {(["unpaid", "dp", "paid"] as const).map((ps) => (
+                <button
+                  key={ps}
+                  type="button"
+                  onClick={() => setForm({ ...form, paymentStatus: ps })}
+                  className={`flex-1 py-2.5 text-sm font-semibold capitalize transition-colors ${
+                    form.paymentStatus === ps
+                      ? ps === "paid"
+                        ? "bg-[#ecfdf5] text-[#065f46]"
+                        : ps === "dp"
+                          ? "bg-[#fff7ed] text-[#9a3412]"
+                          : "bg-[#fef2f2] text-[#991b1b]"
+                      : "bg-surface-container text-on-surface-variant hover:bg-surface-container-high"
+                  }`}
+                >
+                  {ps === "paid"
+                    ? "💰 Paid"
+                    : ps === "dp"
+                      ? "💳 DP"
+                      : "⏳ Unpaid"}
+                </button>
+              ))}
+            </div>
+            {form.paymentStatus === "dp" && (
+              <div className="mt-3">
+                <label className="block text-xs font-semibold text-on-surface-variant uppercase tracking-wider mb-1.5">
+                  Jumlah DP
+                </label>
+                <input
+                  type="number"
+                  min={0}
+                  step="any"
+                  value={form.dpAmount}
+                  onChange={(e) =>
+                    setForm({
+                      ...form,
+                      dpAmount: parseFloat(e.target.value) || 0,
+                    })
+                  }
+                  placeholder="Masukkan jumlah DP"
+                  className="w-full px-4 py-2.5 rounded-xl bg-surface-container text-on-surface text-sm border border-outline-variant/20 focus:outline-none focus:ring-2 focus:ring-[#f59e0b]/30"
+                />
+              </div>
+            )}
+          </div>
+
           {/* Amount + Currency row */}
           <div className="grid grid-cols-3 gap-4">
             <div className="col-span-2">
@@ -165,7 +236,9 @@ export default function EditJobModal({ job, onClose }: Props) {
                 min={0}
                 step="any"
                 value={form.amount}
-                onChange={(e) => setForm({ ...form, amount: parseFloat(e.target.value) || 0 })}
+                onChange={(e) =>
+                  setForm({ ...form, amount: parseFloat(e.target.value) || 0 })
+                }
                 className="w-full px-4 py-2.5 rounded-xl bg-surface-container text-on-surface text-sm border border-outline-variant/20 focus:outline-none focus:ring-2 focus:ring-primary/30"
               />
             </div>

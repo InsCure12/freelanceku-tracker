@@ -38,30 +38,42 @@ export default function LoginPage() {
       {/* Left - Branding */}
       <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-primary to-primary-container items-center justify-center p-12">
         <div className="max-w-md text-on-primary">
-          <h1 className="text-4xl font-bold">The Fiscal Architect</h1>
+          <h1 className="text-4xl font-bold">Jobsheet</h1>
           <p className="mt-4 text-lg text-primary-fixed/70">
             Precision-engineered financial tracking for the modern freelancer.
           </p>
           <div className="mt-8 space-y-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-on-primary/10 flex items-center justify-center">📊</div>
+              <div className="w-10 h-10 rounded-xl bg-on-primary/10 flex items-center justify-center">
+                📊
+              </div>
               <div>
                 <p className="font-semibold">Track Every Job</p>
-                <p className="text-sm text-primary-fixed/60">Log income with architectural precision</p>
+                <p className="text-sm text-primary-fixed/60">
+                  Log income with architectural precision
+                </p>
               </div>
             </div>
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-on-primary/10 flex items-center justify-center">💰</div>
+              <div className="w-10 h-10 rounded-xl bg-on-primary/10 flex items-center justify-center">
+                💰
+              </div>
               <div>
                 <p className="font-semibold">Monitor Payments</p>
-                <p className="text-sm text-primary-fixed/60">Know exactly who owes what</p>
+                <p className="text-sm text-primary-fixed/60">
+                  Know exactly who owes what
+                </p>
               </div>
             </div>
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-on-primary/10 flex items-center justify-center">📄</div>
+              <div className="w-10 h-10 rounded-xl bg-on-primary/10 flex items-center justify-center">
+                📄
+              </div>
               <div>
                 <p className="font-semibold">Generate Invoices</p>
-                <p className="text-sm text-primary-fixed/60">Professional PDFs in seconds</p>
+                <p className="text-sm text-primary-fixed/60">
+                  Professional PDFs in seconds
+                </p>
               </div>
             </div>
           </div>
@@ -73,7 +85,9 @@ export default function LoginPage() {
         <div className="w-full max-w-md">
           <div className="text-center mb-8">
             <h2 className="text-3xl font-bold text-on-surface">Welcome Back</h2>
-            <p className="text-sm text-on-surface-variant mt-2">Sign in to your Fiscal Architect account</p>
+            <p className="text-sm text-on-surface-variant mt-2">
+              Sign in to your Jobsheet account
+            </p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-5">
@@ -84,7 +98,9 @@ export default function LoginPage() {
             )}
 
             <div>
-              <label className="text-[10px] uppercase tracking-wider text-outline font-semibold">Email Address</label>
+              <label className="text-[10px] uppercase tracking-wider text-outline font-semibold">
+                Email Address
+              </label>
               <input
                 type="email"
                 value={email}
@@ -96,7 +112,9 @@ export default function LoginPage() {
             </div>
 
             <div>
-              <label className="text-[10px] uppercase tracking-wider text-outline font-semibold">Password</label>
+              <label className="text-[10px] uppercase tracking-wider text-outline font-semibold">
+                Password
+              </label>
               <input
                 type="password"
                 value={password}
@@ -118,7 +136,10 @@ export default function LoginPage() {
 
           <p className="text-center text-sm text-on-surface-variant mt-6">
             Don&apos;t have an account?{" "}
-            <Link href="/register" className="text-primary font-semibold hover:underline">
+            <Link
+              href="/register"
+              className="text-primary font-semibold hover:underline"
+            >
               Get Started Free
             </Link>
           </p>

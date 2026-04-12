@@ -8,6 +8,20 @@
       "when": 1775798148900,
       "tag": "0000_lying_medusa",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1775897046868,
+      "tag": "0001_workable_true_believers",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1775981729438,
+      "tag": "0002_lying_kid_colt",
+      "breakpoints": true
     }
   ]
 }

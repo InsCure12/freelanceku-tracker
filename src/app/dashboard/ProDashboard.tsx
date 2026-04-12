@@ -3,14 +3,42 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { PlusCircle, ExternalLink, TrendingUp, ClipboardCopy, CalendarDays } from "lucide-react";
+import {
+  PlusCircle,
+  ExternalLink,
+  TrendingUp,
+  ClipboardCopy,
+  CalendarDays,
+} from "lucide-react";
 import StatusDropdown from "@/components/StatusDropdown";
+import PaymentStatusDropdown from "@/components/PaymentStatusDropdown";
 import CurrencyToggle from "@/components/CurrencyToggle";
 import JobActions from "@/components/JobActions";
 import EditJobModal from "@/components/EditJobModal";
 import { useSearch } from "@/components/SearchProvider";
-import { formatIDR, formatUSD, formatAmount, formatAmountAlt, toIDR, toUSD } from "@/lib/currency";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from "recharts";
+import AnimatedCounter from "@/components/AnimatedCounter";
+import JobCalendar from "@/components/JobCalendar";
+import {
+  formatIDR,
+  formatUSD,
+  formatAmount,
+  formatAmountAlt,
+  toIDR,
+  toUSD,
+} from "@/lib/currency";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  PieChart,
+  Pie,
+  Cell,
+  Legend,
+} from "recharts";
 
 const PIE_COLORS = ["#00355f", "#0d9488", "#420096", "#e07830", "#c2185b"];
 
@@ -31,8 +59,15 @@ interface ProDashboardProps {
     amount: number;
     currency: string;
     status: string;
+    paymentStatus: string;
+    dpAmount: number | null;
   }[];
-  categories: { id: string; name: string; icon: string | null; jobCount: number }[];
+  categories: {
+    id: string;
+    name: string;
+    icon: string | null;
+    jobCount: number;
+  }[];
   monthlyRevenueIDR: { month: string; revenue: number }[];
   monthlyRevenueUSD: { month: string; revenue: number }[];
   projectedRevenueIDR: number;
@@ -40,6 +75,13 @@ interface ProDashboardProps {
   bookedCount: number;
   ongoingCount: number;
   selectedMonth: string;
+  actualTaxIDR: number;
+  actualTaxUSD: number;
+  totalInvoicedIDR: number;
+  totalInvoicedUSD: number;
+  dpTotalIDR: number;
+  dpTotalUSD: number;
+  dpJobCount: number;
 }
 
 export default function ProDashboard({
@@ -58,18 +100,31 @@ export default function ProDashboard({
   bookedCount,
   ongoingCount,
   selectedMonth,
+  actualTaxIDR,
+  actualTaxUSD,
+  totalInvoicedIDR,
+  totalInvoicedUSD,
+  dpTotalIDR,
+  dpTotalUSD,
+  dpJobCount,
 }: ProDashboardProps) {
   const router = useRouter();
   const { query: searchQuery } = useSearch();
   const [cur, setCur] = useState<"IDR" | "USD">("IDR");
-  const [editingJob, setEditingJob] = useState<typeof recentJobs[number] | null>(null);
+  const [editingJob, setEditingJob] = useState<
+    (typeof recentJobs)[number] | null
+  >(null);
   const [month, setMonth] = useState(selectedMonth);
   const isFullYear = /^\d{4}$/.test(month);
 
   const filteredJobs = recentJobs.filter((j) => {
     if (!searchQuery.trim()) return true;
     const q = searchQuery.trim().toLowerCase();
-    return j.clientName.toLowerCase().includes(q) || (j.projectName || "").toLowerCase().includes(q) || j.categoryName.toLowerCase().includes(q);
+    return (
+      j.clientName.toLowerCase().includes(q) ||
+      (j.projectName || "").toLowerCase().includes(q) ||
+      j.categoryName.toLowerCase().includes(q)
+    );
   });
 
   const handleMonthChange = (value: string) => {
@@ -90,29 +145,43 @@ export default function ProDashboard({
   };
 
   const yearlyTotal = cur === "IDR" ? yearlyIncomeIDR : yearlyIncomeUSD;
-  const yearlySub = cur === "IDR" ? `≈ $${formatUSD(yearlyIncomeUSD)}` : `≈ Rp ${formatIDR(yearlyIncomeIDR)}`;
-  const netRevenue = yearlyTotal * 0.83;
-  const projectedTax = yearlyTotal * 0.10;
-  const efficiency = yearlyTotal > 0 ? 83.4 : 0;
+  const yearlySub =
+    cur === "IDR"
+      ? `≈ $${formatUSD(yearlyIncomeUSD)}`
+      : `≈ Rp ${formatIDR(yearlyIncomeIDR)}`;
+  const actualTax = cur === "IDR" ? actualTaxIDR : actualTaxUSD;
+  const totalInvoiced = cur === "IDR" ? totalInvoicedIDR : totalInvoicedUSD;
+  const netRevenue =
+    totalInvoiced > 0 ? totalInvoiced - actualTax : yearlyTotal;
+  const projectedTax = actualTax > 0 ? actualTax : yearlyTotal * 0.1;
+  const efficiency = yearlyTotal > 0 ? (netRevenue / yearlyTotal) * 100 : 0;
   const monthlyRevenue = cur === "IDR" ? monthlyRevenueIDR : monthlyRevenueUSD;
 
-  const projectedRevenue = cur === "IDR" ? projectedRevenueIDR : projectedRevenueUSD;
+  const dpTotal = cur === "IDR" ? dpTotalIDR : dpTotalUSD;
+
+  const projectedRevenue =
+    cur === "IDR" ? projectedRevenueIDR : projectedRevenueUSD;
   const totalPipeline = yearlyTotal + projectedRevenue;
-  const confirmedPct = totalPipeline > 0 ? (yearlyTotal / totalPipeline) * 100 : 0;
-  const projectedPct = totalPipeline > 0 ? (projectedRevenue / totalPipeline) * 100 : 0;
+  const confirmedPct =
+    totalPipeline > 0 ? (yearlyTotal / totalPipeline) * 100 : 0;
+  const projectedPct =
+    totalPipeline > 0 ? (projectedRevenue / totalPipeline) * 100 : 0;
 
   const categoryPieData = categories
     .filter((c) => c.jobCount > 0)
     .map((c) => ({ name: c.name, value: c.jobCount }));
 
-  const fmt = (v: number) => cur === "IDR" ? `Rp ${formatIDR(v)}` : `$${formatUSD(v)}`;
+  const fmt = (v: number) =>
+    cur === "IDR" ? `Rp ${formatIDR(v)}` : `$${formatUSD(v)}`;
 
   return (
     <div className="space-y-6">
       {/* Header with Currency Toggle */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <h1 className="text-lg lg:text-2xl font-bold text-on-surface">The Fiscal Architect</h1>
+          <h1 className="text-lg lg:text-2xl font-bold text-on-surface">
+            Jobsheet
+          </h1>
           <CurrencyToggle currency={cur} onChange={setCur} />
         </div>
       </div>
@@ -120,10 +189,12 @@ export default function ProDashboard({
       {/* Month Filter */}
       <div className="flex flex-wrap items-center gap-3 bg-surface-container-lowest rounded-xl px-4 py-3 lg:px-5">
         <CalendarDays size={18} className="text-outline" />
-        <span className="text-sm font-medium text-on-surface-variant hidden sm:block">Period:</span>
+        <span className="text-sm font-medium text-on-surface-variant hidden sm:block">
+          Period:
+        </span>
         <input
           type="month"
-          value={isFullYear ? '' : month}
+          value={isFullYear ? "" : month}
           onChange={(e) => handleMonthChange(e.target.value)}
           className="px-3 py-1.5 bg-surface-container-high rounded-lg text-sm text-on-surface focus:outline-none focus:ring-2 focus:ring-primary"
         />
@@ -131,8 +202,8 @@ export default function ProDashboard({
           onClick={handleYearToggle}
           className={`px-3 lg:px-4 py-1.5 rounded-lg text-xs lg:text-sm font-semibold transition-colors ${
             isFullYear
-              ? 'bg-primary text-on-primary'
-              : 'bg-surface-container-high text-on-surface-variant hover:bg-surface-container-highest'
+              ? "bg-primary text-on-primary"
+              : "bg-surface-container-high text-on-surface-variant hover:bg-surface-container-highest"
           }`}
         >
           Whole Year {month.slice(0, 4)}
@@ -148,29 +219,95 @@ export default function ProDashboard({
           <div className="relative z-10 flex flex-col lg:flex-row gap-6 lg:gap-8">
             {/* Left: Total Invoiced */}
             <div className="flex-1">
-              <p className="text-[0.7rem] uppercase tracking-[0.15em] font-semibold text-on-primary/70">Total Invoiced (YTD)</p>
-              <h2 className="text-3xl lg:text-5xl font-extrabold mt-2 tabular-nums tracking-tight">{fmt(yearlyTotal)}</h2>
+              <p className="text-[0.7rem] uppercase tracking-[0.15em] font-semibold text-on-primary/70">
+                Total Invoiced (YTD)
+              </p>
+              <h2 className="text-3xl lg:text-5xl font-extrabold mt-2 tabular-nums tracking-tight">
+                <AnimatedCounter
+                  value={yearlyTotal}
+                  prefix={cur === "IDR" ? "Rp " : "$"}
+                  formatter={(v) =>
+                    cur === "IDR" ? formatIDR(v) : formatUSD(v)
+                  }
+                />
+              </h2>
               <div className="pt-4 flex items-center gap-3">
                 <div className="p-2 bg-white/10 backdrop-blur-md rounded-lg">
-                  <span className="text-sm">💱</span>
+                  <span className="text-sm">�</span>
                 </div>
                 <div className="flex flex-col">
-                  <span className="text-[0.65rem] text-on-primary/60 uppercase font-medium">Conversion</span>
-                  <span className="text-base lg:text-lg font-bold">{yearlySub}</span>
+                  <span className="text-[0.65rem] text-on-primary/60 uppercase font-medium">
+                    {isFullYear
+                      ? "Whole Year"
+                      : `Pendapatan ${monthlyRevenue[parseInt(month.slice(5, 7), 10) - 1]?.month || ""}`}
+                  </span>
+                  <span className="text-base lg:text-lg font-bold">
+                    {isFullYear
+                      ? fmt(yearlyTotal)
+                      : fmt(
+                          cur === "IDR" ? monthlyIncomeIDR : monthlyIncomeUSD,
+                        )}
+                  </span>
                 </div>
               </div>
+
+              {dpJobCount > 0 && (
+                <div className="pt-3 flex items-center gap-3">
+                  <div className="p-2 bg-[#f59e0b]/20 backdrop-blur-md rounded-lg">
+                    <span className="text-sm">💳</span>
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-[0.65rem] text-on-primary/60 uppercase font-medium">
+                      Down Payment ({dpJobCount} job
+                      {dpJobCount !== 1 ? "s" : ""})
+                    </span>
+                    <span className="text-base lg:text-lg font-bold text-[#fbbf24]">
+                      {fmt(dpTotal)}
+                    </span>
+                  </div>
+                </div>
+              )}
+
               <div className="flex flex-wrap gap-4 lg:gap-8 mt-6">
                 <div>
-                  <p className="text-[10px] uppercase tracking-wider text-on-primary/50">Net Revenue</p>
-                  <p className="text-base lg:text-lg font-bold">{fmt(netRevenue)}</p>
+                  <p className="text-[10px] uppercase tracking-wider text-on-primary/50">
+                    Net Revenue
+                  </p>
+                  <p className="text-base lg:text-lg font-bold">
+                    <AnimatedCounter
+                      value={netRevenue}
+                      prefix={cur === "IDR" ? "Rp " : "$"}
+                      formatter={(v) =>
+                        cur === "IDR" ? formatIDR(v) : formatUSD(v)
+                      }
+                    />
+                  </p>
                 </div>
                 <div>
-                  <p className="text-[10px] uppercase tracking-wider text-on-primary/50">Projected Tax</p>
-                  <p className="text-base lg:text-lg font-bold">{fmt(projectedTax)}</p>
+                  <p className="text-[10px] uppercase tracking-wider text-on-primary/50">
+                    Projected Tax
+                  </p>
+                  <p className="text-base lg:text-lg font-bold">
+                    <AnimatedCounter
+                      value={projectedTax}
+                      prefix={cur === "IDR" ? "Rp " : "$"}
+                      formatter={(v) =>
+                        cur === "IDR" ? formatIDR(v) : formatUSD(v)
+                      }
+                    />
+                  </p>
                 </div>
                 <div>
-                  <p className="text-[10px] uppercase tracking-wider text-on-primary/50">Efficiency</p>
-                  <p className="text-base lg:text-lg font-bold">{efficiency}%</p>
+                  <p className="text-[10px] uppercase tracking-wider text-on-primary/50">
+                    Efficiency
+                  </p>
+                  <p className="text-base lg:text-lg font-bold">
+                    <AnimatedCounter
+                      value={efficiency}
+                      suffix="%"
+                      formatter={(v) => v.toFixed(1)}
+                    />
+                  </p>
                 </div>
               </div>
             </div>
@@ -178,10 +315,21 @@ export default function ProDashboard({
             {/* Right: Projected Revenue */}
             <div className="lg:w-64 flex flex-col justify-between rounded-xl bg-white/10 backdrop-blur-sm p-4 lg:p-5">
               <div>
-                <p className="text-[10px] uppercase tracking-wider text-on-primary/60">Projected Revenue</p>
-                <p className="text-xl lg:text-2xl font-bold mt-1">{fmt(projectedRevenue)}</p>
+                <p className="text-[10px] uppercase tracking-wider text-on-primary/60">
+                  Projected Revenue
+                </p>
+                <p className="text-xl lg:text-2xl font-bold mt-1">
+                  <AnimatedCounter
+                    value={projectedRevenue}
+                    prefix={cur === "IDR" ? "Rp " : "$"}
+                    formatter={(v) =>
+                      cur === "IDR" ? formatIDR(v) : formatUSD(v)
+                    }
+                  />
+                </p>
                 <p className="text-xs text-on-primary/50 mt-0.5">
-                  {bookedCount + ongoingCount} job{bookedCount + ongoingCount !== 1 ? "s" : ""} in pipeline
+                  {bookedCount + ongoingCount} job
+                  {bookedCount + ongoingCount !== 1 ? "s" : ""} in pipeline
                 </p>
               </div>
 
@@ -203,10 +351,12 @@ export default function ProDashboard({
                 </div>
                 <div className="flex items-center justify-between mt-2 text-[10px] text-on-primary/60">
                   <span className="flex items-center gap-1">
-                    <span className="w-2 h-2 rounded-full bg-[#4ade80]" /> Confirmed
+                    <span className="w-2 h-2 rounded-full bg-[#4ade80]" />{" "}
+                    Confirmed
                   </span>
                   <span className="flex items-center gap-1">
-                    <span className="w-2 h-2 rounded-full bg-[#ea580c]" /> Booked
+                    <span className="w-2 h-2 rounded-full bg-[#ea580c]" />{" "}
+                    Booked
                   </span>
                 </div>
               </div>
@@ -217,7 +367,9 @@ export default function ProDashboard({
         {/* Active Projects */}
         <div className="lg:col-span-4 bg-surface-container-lowest rounded-2xl p-6 animate-fade-in-up delay-200">
           <div className="flex items-center justify-between">
-            <h3 className="text-sm font-semibold text-on-surface-variant uppercase tracking-wider">Active Projects</h3>
+            <h3 className="text-sm font-semibold text-on-surface-variant uppercase tracking-wider">
+              Active Projects
+            </h3>
             <span className="text-primary">⚡</span>
           </div>
           <div className="mt-4 space-y-3">
@@ -225,16 +377,23 @@ export default function ProDashboard({
               .filter((j) => j.status === "ongoing")
               .slice(0, 3)
               .map((j) => (
-                <div key={j.id} className="flex items-center justify-between py-2">
-                  <p className="text-sm font-medium text-on-surface">{j.clientName}</p>
+                <div
+                  key={j.id}
+                  className="flex items-center justify-between py-2"
+                >
+                  <p className="text-sm font-medium text-on-surface">
+                    {j.clientName}
+                  </p>
                   <p className="text-sm text-outline">
                     {cur === "IDR"
                       ? `Rp ${formatIDR(toIDR(j.amount, j.currency))}`
-                      : `$${formatUSD(toUSD(j.amount, j.currency))}`}/mo
+                      : `$${formatUSD(toUSD(j.amount, j.currency))}`}
+                    /mo
                   </p>
                 </div>
               ))}
-            {filteredJobs.filter((j) => j.status === "ongoing").length === 0 && (
+            {filteredJobs.filter((j) => j.status === "ongoing").length ===
+              0 && (
               <p className="text-sm text-outline py-2">No active projects</p>
             )}
           </div>
@@ -253,8 +412,12 @@ export default function ProDashboard({
         <div className="lg:col-span-8 bg-surface-container-lowest rounded-2xl p-4 lg:p-6 animate-fade-in-up delay-300">
           <div className="flex items-center justify-between mb-4 lg:mb-6">
             <div>
-              <h3 className="text-sm lg:text-lg font-bold text-primary lg:text-on-surface">Revenue Growth</h3>
-              <p className="text-xs text-outline hidden lg:block">Past 12 months trajectory</p>
+              <h3 className="text-sm lg:text-lg font-bold text-primary lg:text-on-surface">
+                Revenue Growth
+              </h3>
+              <p className="text-xs text-outline hidden lg:block">
+                Past 12 months trajectory
+              </p>
             </div>
             <button className="px-3 py-1.5 text-xs font-medium bg-surface-container-high rounded-lg text-on-surface-variant hidden lg:block">
               Annual View
@@ -263,11 +426,30 @@ export default function ProDashboard({
           <div className="h-40 lg:h-64">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={monthlyRevenue} barSize={24}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#eceef0" vertical={false} />
-                <XAxis dataKey="month" tick={{ fontSize: 10, fill: "#727780" }} axisLine={false} tickLine={false} />
-                <YAxis tick={{ fontSize: 10, fill: "#727780" }} axisLine={false} tickLine={false} className="hidden lg:block" />
+                <CartesianGrid
+                  strokeDasharray="3 3"
+                  stroke="#eceef0"
+                  vertical={false}
+                />
+                <XAxis
+                  dataKey="month"
+                  tick={{ fontSize: 10, fill: "#727780" }}
+                  axisLine={false}
+                  tickLine={false}
+                />
+                <YAxis
+                  tick={{ fontSize: 10, fill: "#727780" }}
+                  axisLine={false}
+                  tickLine={false}
+                  className="hidden lg:block"
+                />
                 <Tooltip
-                  contentStyle={{ background: "#fff", border: "none", borderRadius: "12px", boxShadow: "0 4px 24px rgba(0,0,0,0.08)" }}
+                  contentStyle={{
+                    background: "#fff",
+                    border: "none",
+                    borderRadius: "12px",
+                    boxShadow: "0 4px 24px rgba(0,0,0,0.08)",
+                  }}
                 />
                 <Bar dataKey="revenue" fill="#0f4c81" radius={[6, 6, 0, 0]} />
               </BarChart>
@@ -277,7 +459,9 @@ export default function ProDashboard({
 
         {/* Income by Category */}
         <div className="lg:col-span-4 bg-surface-container-lowest rounded-2xl p-4 lg:p-6 animate-scale-in delay-400">
-          <h3 className="text-lg font-bold text-on-surface mb-4">Income by Category</h3>
+          <h3 className="text-lg font-bold text-on-surface mb-4">
+            Income by Category
+          </h3>
           {categoryPieData.length > 0 ? (
             <div className="h-56 animate-chart-reveal delay-500">
               <ResponsiveContainer width="100%" height={224}>
@@ -295,7 +479,11 @@ export default function ProDashboard({
                       <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />
                     ))}
                   </Pie>
-                  <Legend verticalAlign="bottom" iconType="circle" wrapperStyle={{ fontSize: "12px" }} />
+                  <Legend
+                    verticalAlign="bottom"
+                    iconType="circle"
+                    wrapperStyle={{ fontSize: "12px" }}
+                  />
                 </PieChart>
               </ResponsiveContainer>
             </div>
@@ -305,14 +493,33 @@ export default function ProDashboard({
         </div>
       </div>
 
+      {/* Job Calendar */}
+      <JobCalendar jobs={recentJobs} />
+
       {/* Professional Ledger */}
       <div className="bg-surface-container-lowest rounded-2xl overflow-visible animate-fade-in-up delay-500">
         <div className="flex items-center justify-between px-4 lg:px-6 py-4">
-          <h3 className="text-sm lg:text-lg font-bold text-primary lg:text-on-surface">Active Projects</h3>
-          <button className="text-[0.65rem] font-bold text-primary uppercase tracking-wider lg:hidden">See all</button>
+          <h3 className="text-sm lg:text-lg font-bold text-primary lg:text-on-surface">
+            Active Projects
+          </h3>
+          <button className="text-[0.65rem] font-bold text-primary uppercase tracking-wider lg:hidden">
+            See all
+          </button>
           <div className="hidden lg:flex gap-2">
             <button className="p-2 rounded-lg hover:bg-surface-container-high text-on-surface-variant transition-colors">
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" /></svg>
+              <svg
+                className="w-5 h-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"
+                />
+              </svg>
             </button>
           </div>
         </div>
@@ -320,7 +527,9 @@ export default function ProDashboard({
         {/* Mobile: Card list */}
         <div className="lg:hidden space-y-3 px-4 pb-4">
           {filteredJobs.length === 0 ? (
-            <div className="py-8 text-center text-sm text-outline">No jobs yet. Start logging your work!</div>
+            <div className="py-8 text-center text-sm text-outline">
+              No jobs yet. Start logging your work!
+            </div>
           ) : (
             filteredJobs.map((j) => {
               const statusColor: Record<string, string> = {
@@ -330,14 +539,23 @@ export default function ProDashboard({
                 booked: "bg-secondary-fixed text-on-secondary-fixed",
               };
               return (
-                <div key={j.id} className="bg-surface-container-lowest p-4 rounded-xl flex items-center justify-between">
+                <div
+                  key={j.id}
+                  className="bg-surface-container-lowest p-4 rounded-xl flex items-center justify-between"
+                >
                   <div className="flex items-center gap-4">
                     <div className="w-12 h-12 bg-primary-fixed rounded-xl flex items-center justify-center text-sm font-bold text-on-primary-fixed">
                       {j.clientName.charAt(0)}
                     </div>
                     <div className="flex flex-col min-w-0">
-                      <span className="text-sm font-bold text-on-surface truncate">{j.clientName}</span>
-                      {j.projectName && <span className="text-[0.65rem] text-outline truncate">{j.projectName}</span>}
+                      <span className="text-sm font-bold text-on-surface truncate">
+                        {j.clientName}
+                      </span>
+                      {j.projectName && (
+                        <span className="text-[0.65rem] text-outline truncate">
+                          {j.projectName}
+                        </span>
+                      )}
                     </div>
                   </div>
                   <div className="flex flex-col items-end shrink-0 ml-3">
@@ -346,7 +564,9 @@ export default function ProDashboard({
                         ? `Rp ${formatIDR(toIDR(j.amount, j.currency))}`
                         : `$${formatUSD(toUSD(j.amount, j.currency))}`}
                     </span>
-                    <span className={`text-[0.65rem] font-bold px-2 py-0.5 rounded-full capitalize ${statusColor[j.status] || "bg-surface-container text-outline"}`}>
+                    <span
+                      className={`text-[0.65rem] font-bold px-2 py-0.5 rounded-full capitalize ${statusColor[j.status] || "bg-surface-container text-outline"}`}
+                    >
                       {j.status}
                     </span>
                   </div>
@@ -360,71 +580,124 @@ export default function ProDashboard({
         <table className="w-full hidden lg:table">
           <thead>
             <tr className="text-[10px] uppercase tracking-wider text-outline">
-              <th className="text-left py-3 px-6 font-semibold">Client / Job</th>
+              <th className="text-left py-3 px-6 font-semibold">
+                Client / Job
+              </th>
               <th className="text-left py-3 px-6 font-semibold">Date</th>
               <th className="text-left py-3 px-6 font-semibold">Deadline</th>
               <th className="text-right py-3 px-6 font-semibold">Amount</th>
-              <th className="text-right py-3 px-6 font-semibold">Converted</th>
               <th className="text-center py-3 px-6 font-semibold">Status</th>
+              <th className="text-center py-3 px-6 font-semibold">Payment</th>
               <th className="text-center py-3 px-6 font-semibold"></th>
             </tr>
           </thead>
           <tbody>
             {filteredJobs.length === 0 ? (
               <tr>
-                <td colSpan={7} className="py-12 text-center text-sm text-outline">
+                <td
+                  colSpan={7}
+                  className="py-12 text-center text-sm text-outline"
+                >
                   No jobs yet. Start logging your work!
                 </td>
               </tr>
             ) : (
               filteredJobs.map((j, idx) => (
-                <tr key={j.id} className="hover:bg-surface-container-low/50 row-highlight animate-list-item" style={{ animationDelay: `${0.6 + idx * 0.06}s` }}>
+                <tr
+                  key={j.id}
+                  className="hover:bg-surface-container-low/50 row-highlight animate-list-item"
+                  style={{ animationDelay: `${0.6 + idx * 0.06}s` }}
+                >
                   <td className="py-4 px-6">
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 rounded-xl bg-primary-fixed flex items-center justify-center text-sm font-bold text-on-primary-fixed">
                         {j.clientName.charAt(0)}
                       </div>
                       <div>
-                        <p className="text-sm font-semibold text-on-surface">{j.clientName}</p>
-                        {j.projectName && <p className="text-xs text-outline">{j.projectName}</p>}
+                        <p className="text-sm font-semibold text-on-surface">
+                          {j.clientName}
+                        </p>
+                        {j.projectName && (
+                          <p className="text-xs text-outline">
+                            {j.projectName}
+                          </p>
+                        )}
                       </div>
                     </div>
                   </td>
                   <td className="py-4 px-6 text-sm text-on-surface-variant">
-                    {new Date(j.date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+                    {new Date(j.date).toLocaleDateString("en-US", {
+                      month: "short",
+                      day: "numeric",
+                      year: "numeric",
+                    })}
                   </td>
                   <td className="py-4 px-6 text-sm">
-                    {j.deadline && j.status !== "done"
-                      ? (() => {
-                          const now = new Date();
-                          const dl = new Date(j.deadline);
-                          const diff = Math.ceil((dl.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
-                          const color = diff < 0 ? "text-error font-semibold" : diff <= 3 ? "text-error" : diff <= 7 ? "text-orange-500" : "text-on-surface-variant";
-                          return (
-                            <span className={color}>
-                              {dl.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
-                              {diff < 0 && <span className="ml-1 text-[10px]">overdue</span>}
-                              {diff >= 0 && diff <= 3 && <span className="ml-1 text-[10px]">{diff}d left</span>}
-                              {diff > 3 && diff <= 7 && <span className="ml-1 text-[10px]">{diff}d left</span>}
-                            </span>
-                          );
-                        })()
-                      : j.deadline
-                        ? <span className="text-on-surface-variant">{new Date(j.deadline).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}</span>
-                        : <span className="text-outline">—</span>}
+                    {j.deadline && j.status !== "done" ? (
+                      (() => {
+                        const now = new Date();
+                        const dl = new Date(j.deadline);
+                        const diff = Math.ceil(
+                          (dl.getTime() - now.getTime()) /
+                            (1000 * 60 * 60 * 24),
+                        );
+                        const color =
+                          diff < 0
+                            ? "text-error font-semibold"
+                            : diff <= 3
+                              ? "text-error"
+                              : diff <= 7
+                                ? "text-orange-500"
+                                : "text-on-surface-variant";
+                        return (
+                          <span className={color}>
+                            {dl.toLocaleDateString("en-US", {
+                              month: "short",
+                              day: "numeric",
+                              year: "numeric",
+                            })}
+                            {diff < 0 && (
+                              <span className="ml-1 text-[10px]">overdue</span>
+                            )}
+                            {diff >= 0 && diff <= 3 && (
+                              <span className="ml-1 text-[10px]">
+                                {diff}d left
+                              </span>
+                            )}
+                            {diff > 3 && diff <= 7 && (
+                              <span className="ml-1 text-[10px]">
+                                {diff}d left
+                              </span>
+                            )}
+                          </span>
+                        );
+                      })()
+                    ) : j.deadline ? (
+                      <span className="text-on-surface-variant">
+                        {new Date(j.deadline).toLocaleDateString("en-US", {
+                          month: "short",
+                          day: "numeric",
+                          year: "numeric",
+                        })}
+                      </span>
+                    ) : (
+                      <span className="text-outline">—</span>
+                    )}
                   </td>
                   <td className="py-4 px-6 text-right text-sm font-semibold text-on-surface">
                     {cur === "IDR"
                       ? `Rp ${formatIDR(toIDR(j.amount, j.currency))}`
                       : `$${formatUSD(toUSD(j.amount, j.currency))}`}
                   </td>
-                  <td className="py-4 px-6 text-right text-xs text-outline">
-                    {cur === "IDR"
-                      ? `$${formatUSD(toUSD(j.amount, j.currency))}`
-                      : `Rp ${formatIDR(toIDR(j.amount, j.currency))}`}
-                  </td>
                   <td className="py-4 px-6 text-center">
                     <StatusDropdown jobId={j.id} currentStatus={j.status} />
+                  </td>
+                  <td className="py-4 px-6 text-center">
+                    <PaymentStatusDropdown
+                      jobId={j.id}
+                      currentStatus={j.paymentStatus}
+                      currentDpAmount={j.dpAmount ?? 0}
+                    />
                   </td>
                   <td className="py-4 px-6 text-center">
                     <JobActions jobId={j.id} onEdit={() => setEditingJob(j)} />
@@ -437,7 +710,10 @@ export default function ProDashboard({
 
         {filteredJobs.length > 0 && (
           <div className="px-6 py-4 text-center">
-            <Link href="/dashboard/work-log" className="text-sm text-primary font-medium hover:underline">
+            <Link
+              href="/dashboard/work-log"
+              className="text-sm text-primary font-medium hover:underline"
+            >
               View Full Ledger History
             </Link>
           </div>

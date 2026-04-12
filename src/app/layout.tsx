@@ -8,8 +8,9 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "The Fiscal Architect — Freelancer Income Tracker",
-  description: "Track every job, monitor payments, and generate professional invoices. Built for precision-minded architects of their own career.",
+  title: "Jobsheet — Freelancer Income Tracker",
+  description:
+    "Track every job, monitor payments, and generate professional invoices. Built for precision-minded architects of their own career.",
 };
 
 export default function RootLayout({

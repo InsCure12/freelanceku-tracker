@@ -22,6 +22,13 @@
       "when": 1775981729438,
       "tag": "0002_lying_kid_colt",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1778174270855,
+      "tag": "0003_unknown_mikhail_rasputin",
+      "breakpoints": true
     }
   ]
 }

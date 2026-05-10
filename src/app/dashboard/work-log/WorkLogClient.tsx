@@ -84,7 +84,7 @@ function StatusBadge({ status }: { status: string }) {
 
 function PaymentBadge({ status }: { status: string }) {
   const styles: Record<string, { bg: string; label: string }> = {
-    paid:   { bg: "bg-[#ecfdf5] text-[#065f46]", label: "Paid" },
+    paid: { bg: "bg-[#ecfdf5] text-[#065f46]", label: "Paid" },
     unpaid: { bg: "bg-[#fef2f2] text-[#991b1b]", label: "Unpaid" },
   };
   const s = styles[status] || styles.unpaid;
@@ -137,7 +137,8 @@ export default function WorkLogClient({
     if (filterCategory !== "all" && j.categoryName !== filterCategory)
       return false;
     if (filterStatus !== "all" && j.status !== filterStatus) return false;
-    if (filterPayment !== "all" && j.paymentStatus !== filterPayment) return false;
+    if (filterPayment !== "all" && j.paymentStatus !== filterPayment)
+      return false;
     return true;
   });
 
@@ -323,7 +324,10 @@ export default function WorkLogClient({
           <select
             className="bg-transparent text-sm text-on-surface focus:outline-none"
             value={filterPayment}
-            onChange={(e) => { setFilterPayment(e.target.value); setPage(1); }}
+            onChange={(e) => {
+              setFilterPayment(e.target.value);
+              setPage(1);
+            }}
           >
             <option value="all">All Payments</option>
             <option value="paid">Paid</option>

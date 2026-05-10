@@ -35,7 +35,9 @@ export default function JobCalendar({ jobs, formatAmount }: JobCalendarProps) {
   const [viewYear, setViewYear] = useState(today.getFullYear());
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [hoveredDate, setHoveredDate] = useState<string | null>(null);
-  const [tooltipPos, setTooltipPos] = useState<{ x: number; y: number } | null>(null);
+  const [tooltipPos, setTooltipPos] = useState<{ x: number; y: number } | null>(
+    null,
+  );
   const calendarRef = useRef<HTMLDivElement>(null);
 
   const jobsByDate = useMemo(() => {
@@ -201,7 +203,9 @@ export default function JobCalendar({ jobs, formatAmount }: JobCalendarProps) {
                     <span
                       key={`job-${idx}`}
                       className={`w-1.5 h-1.5 rounded-full ${
-                        isSelected ? "bg-on-primary/70" : STATUS_DOT[j.status] || STATUS_DOT.pending
+                        isSelected
+                          ? "bg-on-primary/70"
+                          : STATUS_DOT[j.status] || STATUS_DOT.pending
                       }`}
                     />
                   ))}
@@ -213,7 +217,9 @@ export default function JobCalendar({ jobs, formatAmount }: JobCalendarProps) {
                     />
                   )}
                   {dayJobs.length > 3 && (
-                    <span className={`text-[8px] leading-none ${isSelected ? "text-on-primary/70" : "text-outline"}`}>
+                    <span
+                      className={`text-[8px] leading-none ${isSelected ? "text-on-primary/70" : "text-outline"}`}
+                    >
                       +{dayJobs.length - 3}
                     </span>
                   )}
@@ -224,164 +230,159 @@ export default function JobCalendar({ jobs, formatAmount }: JobCalendarProps) {
         })}
 
         {/* Floating hover tooltip */}
-        {hoveredDate && tooltipPos && (() => {
-          const hoverJobs = jobsByDate[hoveredDate] || [];
-          const hoverDeadlines = deadlinesByDate[hoveredDate] || [];
-          if (hoverJobs.length === 0 && hoverDeadlines.length === 0) return null;
+        {hoveredDate &&
+          tooltipPos &&
+          (() => {
+            const hoverJobs = jobsByDate[hoveredDate] || [];
+            const hoverDeadlines = deadlinesByDate[hoveredDate] || [];
+            if (hoverJobs.length === 0 && hoverDeadlines.length === 0)
+              return null;
 
-          return (
-            <div
-              className="absolute z-50 pointer-events-none animate-in fade-in duration-150"
-              style={{
-                left: `${tooltipPos.x}px`,
-                top: `${tooltipPos.y}px`,
-                transform: "translate(-50%, -100%) translateY(-8px)",
-              }}
-            >
-              <div className="bg-surface-container-highest rounded-xl shadow-lg shadow-black/15 border border-outline/10 px-3.5 py-3 min-w-[200px] max-w-[280px]">
-                <p className="text-[10px] text-outline uppercase tracking-wider font-semibold mb-2">
-                  {new Date(hoveredDate + "T00:00:00").toLocaleDateString("en-US", {
-                    month: "short",
-                    day: "numeric",
-                  })}
-                </p>
-
-                {/* Jobs on this date */}
-                {hoverJobs.length > 0 && (
-                  <div className="space-y-1.5">
-                    {hoverJobs.slice(0, 4).map((j) => (
-                      <div key={j.id} className="flex items-center gap-2">
-                        <span className={`w-2 h-2 rounded-full shrink-0 ${STATUS_DOT[j.status] || STATUS_DOT.pending}`} />
-                        <div className="flex-1 min-w-0">
-                          <p className="text-xs font-semibold text-on-surface truncate">{j.clientName}</p>
-                          {j.projectName && (
-                            <p className="text-[10px] text-outline truncate">{j.projectName}</p>
-                          )}
-                        </div>
-                        <span className="text-[10px] font-semibold text-on-surface-variant shrink-0">
-                          {fmt(j.amount, j.currency)}
-                        </span>
-                      </div>
-                    ))}
-                    {hoverJobs.length > 4 && (
-                      <p className="text-[10px] text-outline">+{hoverJobs.length - 4} more</p>
+            return (
+              <div
+                className="absolute z-50 pointer-events-none animate-in fade-in duration-150"
+                style={{
+                  left: `${tooltipPos.x}px`,
+                  top: `${tooltipPos.y}px`,
+                  transform: "translate(-50%, -100%) translateY(-8px)",
+                }}
+              >
+                <div className="bg-surface-container-highest rounded-xl shadow-lg shadow-black/15 border border-outline/10 px-3.5 py-3 min-w-[200px] max-w-[280px]">
+                  <p className="text-[10px] text-outline uppercase tracking-wider font-semibold mb-2">
+                    {new Date(hoveredDate + "T00:00:00").toLocaleDateString(
+                      "en-US",
+                      {
+                        month: "short",
+                        day: "numeric",
+                      },
                     )}
-                  </div>
-                )}
+                  </p>
 
-                {/* Deadlines on this date */}
-                {hoverDeadlines.length > 0 && (
-                  <>
-                    {hoverJobs.length > 0 && <div className="my-2 border-t border-outline/10" />}
-                    <p className="text-[10px] text-error font-semibold uppercase tracking-wider mb-1.5">
-                      🔴 Deadline{hoverDeadlines.length > 1 ? "s" : ""}
-                    </p>
+                  {/* Jobs on this date */}
+                  {hoverJobs.length > 0 && (
                     <div className="space-y-1.5">
-                      {hoverDeadlines.slice(0, 3).map((j) => (
-                        <div key={`dl-${j.id}`} className="flex items-center gap-2">
-                          <span className="w-2 h-2 rounded-sm bg-error shrink-0" />
-                          <p className="text-xs font-medium text-on-surface truncate flex-1">{j.clientName}</p>
-                          <span className={`text-[10px] font-semibold capitalize ${j.status === "done" ? "text-primary" : "text-outline"}`}>
-                            {j.status}
+                      {hoverJobs.slice(0, 4).map((j) => (
+                        <div key={j.id} className="flex items-center gap-2">
+                          <span
+                            className={`w-2 h-2 rounded-full shrink-0 ${STATUS_DOT[j.status] || STATUS_DOT.pending}`}
+                          />
+                          <div className="flex-1 min-w-0">
+                            <p className="text-xs font-semibold text-on-surface truncate">
+                              {j.clientName}
+                            </p>
+                            {j.projectName && (
+                              <p className="text-[10px] text-outline truncate">
+                                {j.projectName}
+                              </p>
+                            )}
+                          </div>
+                          <span className="text-[10px] font-semibold text-on-surface-variant shrink-0">
+                            {fmt(j.amount, j.currency)}
                           </span>
                         </div>
                       ))}
-                      {hoverDeadlines.length > 3 && (
-                        <p className="text-[10px] text-outline">+{hoverDeadlines.length - 3} more</p>
+                      {hoverJobs.length > 4 && (
+                        <p className="text-[10px] text-outline">
+                          +{hoverJobs.length - 4} more
+                        </p>
                       )}
                     </div>
-                  </>
-                )}
+                  )}
+
+                  {/* Deadlines on this date */}
+                  {hoverDeadlines.length > 0 && (
+                    <>
+                      {hoverJobs.length > 0 && (
+                        <div className="my-2 border-t border-outline/10" />
+                      )}
+                      <p className="text-[10px] text-error font-semibold uppercase tracking-wider mb-1.5">
+                        🔴 Deadline{hoverDeadlines.length > 1 ? "s" : ""}
+                      </p>
+                      <div className="space-y-1.5">
+                        {hoverDeadlines.slice(0, 3).map((j) => (
+                          <div
+                            key={`dl-${j.id}`}
+                            className="flex items-center gap-2"
+                          >
+                            <span className="w-2 h-2 rounded-sm bg-error shrink-0" />
+                            <p className="text-xs font-medium text-on-surface truncate flex-1">
+                              {j.clientName}
+                            </p>
+                            <span
+                              className={`text-[10px] font-semibold capitalize ${j.status === "done" ? "text-primary" : "text-outline"}`}
+                            >
+                              {j.status}
+                            </span>
+                          </div>
+                        ))}
+                        {hoverDeadlines.length > 3 && (
+                          <p className="text-[10px] text-outline">
+                            +{hoverDeadlines.length - 3} more
+                          </p>
+                        )}
+                      </div>
+                    </>
+                  )}
+                </div>
+                {/* Tooltip arrow */}
+                <div className="flex justify-center">
+                  <div className="w-2.5 h-2.5 bg-surface-container-highest rotate-45 -mt-1.5 border-r border-b border-outline/10" />
+                </div>
               </div>
-              {/* Tooltip arrow */}
-              <div className="flex justify-center">
-                <div className="w-2.5 h-2.5 bg-surface-container-highest rotate-45 -mt-1.5 border-r border-b border-outline/10" />
-              </div>
-            </div>
-          );
-        })()}
+            );
+          })()}
       </div>
 
       {/* Selected day detail */}
-      {selectedDate && (() => {
-        const selDeadlines = deadlinesByDate[selectedDate] || [];
-        return (
-        <div className="mt-4 pt-4 border-t border-outline/10">
-          <p className="text-xs text-outline uppercase tracking-wider mb-3">
-            {new Date(selectedDate + "T00:00:00").toLocaleDateString("en-US", {
-              weekday: "long",
-              month: "long",
-              day: "numeric",
-              year: "numeric",
-            })}
-            {selectedJobs.length > 0 && (
-              <span className="ml-2 text-primary font-semibold">
-                {selectedJobs.length} job{selectedJobs.length !== 1 ? "s" : ""}
-              </span>
-            )}
-            {selDeadlines.length > 0 && (
-              <span className="ml-2 text-error font-semibold">
-                {selDeadlines.length} deadline{selDeadlines.length !== 1 ? "s" : ""}
-              </span>
-            )}
-          </p>
-          {selectedJobs.length === 0 && selDeadlines.length === 0 ? (
-            <p className="text-sm text-outline">No jobs on this date.</p>
-          ) : (
-            <div className="space-y-2">
-              {selectedJobs.map((j) => (
-                <div
-                  key={j.id}
-                  className="flex items-center justify-between py-2.5 px-3 rounded-xl bg-surface-container-low hover:bg-surface-container-high transition-colors"
-                >
-                  <div className="flex items-center gap-3">
-                    <span
-                      className={`w-2.5 h-2.5 rounded-full ${STATUS_DOT[j.status] || STATUS_DOT.pending}`}
-                    />
-                    <div>
-                      <p className="text-sm font-semibold text-on-surface">
-                        {j.clientName}
-                      </p>
-                      {j.projectName && (
-                        <p className="text-xs text-outline">{j.projectName}</p>
-                      )}
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-sm font-semibold text-on-surface">
-                      {fmt(j.amount, j.currency)}
-                    </p>
-                    <span
-                      className={`text-[10px] font-semibold uppercase ${
-                        j.paymentStatus === "paid"
-                          ? "text-[#065f46]"
-                          : "text-[#991b1b]"
-                      }`}
-                    >
-                      {j.paymentStatus}
-                    </span>
-                  </div>
-                </div>
-              ))}
-
-              {/* Deadlines on selected date */}
-              {selDeadlines.length > 0 && (
-                <>
-                  {selectedJobs.length > 0 && <div className="my-2 border-t border-outline/10" />}
-                  <p className="text-[10px] text-error font-semibold uppercase tracking-wider mb-2">
-                    🔴 Deadline{selDeadlines.length > 1 ? "s" : ""} due
-                  </p>
-                  {selDeadlines.map((j) => (
+      {selectedDate &&
+        (() => {
+          const selDeadlines = deadlinesByDate[selectedDate] || [];
+          return (
+            <div className="mt-4 pt-4 border-t border-outline/10">
+              <p className="text-xs text-outline uppercase tracking-wider mb-3">
+                {new Date(selectedDate + "T00:00:00").toLocaleDateString(
+                  "en-US",
+                  {
+                    weekday: "long",
+                    month: "long",
+                    day: "numeric",
+                    year: "numeric",
+                  },
+                )}
+                {selectedJobs.length > 0 && (
+                  <span className="ml-2 text-primary font-semibold">
+                    {selectedJobs.length} job
+                    {selectedJobs.length !== 1 ? "s" : ""}
+                  </span>
+                )}
+                {selDeadlines.length > 0 && (
+                  <span className="ml-2 text-error font-semibold">
+                    {selDeadlines.length} deadline
+                    {selDeadlines.length !== 1 ? "s" : ""}
+                  </span>
+                )}
+              </p>
+              {selectedJobs.length === 0 && selDeadlines.length === 0 ? (
+                <p className="text-sm text-outline">No jobs on this date.</p>
+              ) : (
+                <div className="space-y-2">
+                  {selectedJobs.map((j) => (
                     <div
-                      key={`dl-${j.id}`}
-                      className="flex items-center justify-between py-2.5 px-3 rounded-xl bg-error-container/30 hover:bg-error-container/50 transition-colors"
+                      key={j.id}
+                      className="flex items-center justify-between py-2.5 px-3 rounded-xl bg-surface-container-low hover:bg-surface-container-high transition-colors"
                     >
                       <div className="flex items-center gap-3">
-                        <span className="w-2.5 h-2.5 rounded-sm bg-error" />
+                        <span
+                          className={`w-2.5 h-2.5 rounded-full ${STATUS_DOT[j.status] || STATUS_DOT.pending}`}
+                        />
                         <div>
-                          <p className="text-sm font-semibold text-on-surface">{j.clientName}</p>
+                          <p className="text-sm font-semibold text-on-surface">
+                            {j.clientName}
+                          </p>
                           {j.projectName && (
-                            <p className="text-xs text-outline">{j.projectName}</p>
+                            <p className="text-xs text-outline">
+                              {j.projectName}
+                            </p>
                           )}
                         </div>
                       </div>
@@ -389,19 +390,65 @@ export default function JobCalendar({ jobs, formatAmount }: JobCalendarProps) {
                         <p className="text-sm font-semibold text-on-surface">
                           {fmt(j.amount, j.currency)}
                         </p>
-                        <span className={`text-[10px] font-semibold capitalize ${j.status === "done" ? "text-primary" : "text-outline"}`}>
-                          {j.status}
+                        <span
+                          className={`text-[10px] font-semibold uppercase ${
+                            j.paymentStatus === "paid"
+                              ? "text-[#065f46]"
+                              : "text-[#991b1b]"
+                          }`}
+                        >
+                          {j.paymentStatus}
                         </span>
                       </div>
                     </div>
                   ))}
-                </>
+
+                  {/* Deadlines on selected date */}
+                  {selDeadlines.length > 0 && (
+                    <>
+                      {selectedJobs.length > 0 && (
+                        <div className="my-2 border-t border-outline/10" />
+                      )}
+                      <p className="text-[10px] text-error font-semibold uppercase tracking-wider mb-2">
+                        🔴 Deadline{selDeadlines.length > 1 ? "s" : ""} due
+                      </p>
+                      {selDeadlines.map((j) => (
+                        <div
+                          key={`dl-${j.id}`}
+                          className="flex items-center justify-between py-2.5 px-3 rounded-xl bg-error-container/30 hover:bg-error-container/50 transition-colors"
+                        >
+                          <div className="flex items-center gap-3">
+                            <span className="w-2.5 h-2.5 rounded-sm bg-error" />
+                            <div>
+                              <p className="text-sm font-semibold text-on-surface">
+                                {j.clientName}
+                              </p>
+                              {j.projectName && (
+                                <p className="text-xs text-outline">
+                                  {j.projectName}
+                                </p>
+                              )}
+                            </div>
+                          </div>
+                          <div className="text-right">
+                            <p className="text-sm font-semibold text-on-surface">
+                              {fmt(j.amount, j.currency)}
+                            </p>
+                            <span
+                              className={`text-[10px] font-semibold capitalize ${j.status === "done" ? "text-primary" : "text-outline"}`}
+                            >
+                              {j.status}
+                            </span>
+                          </div>
+                        </div>
+                      ))}
+                    </>
+                  )}
+                </div>
               )}
             </div>
-          )}
-        </div>
-        );
-      })()}
+          );
+        })()}
     </div>
   );
 }

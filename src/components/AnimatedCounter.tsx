@@ -59,7 +59,9 @@ export default function AnimatedCounter({
 
   return (
     <span className={className}>
-      {prefix}{formatted}{suffix}
+      {prefix}
+      {formatted}
+      {suffix}
     </span>
   );
 }

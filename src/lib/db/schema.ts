@@ -60,6 +60,10 @@ export const account = sqliteTable("account", {
   }),
   scope: text("scope"),
   password: text("password"),
+  passwordResetToken: text("password_reset_token"),
+  passwordResetTokenExpiresAt: integer("password_reset_token_expires_at", {
+    mode: "timestamp",
+  }),
   createdAt: integer("created_at", { mode: "timestamp" })
     .notNull()
     .$defaultFn(() => new Date()),
